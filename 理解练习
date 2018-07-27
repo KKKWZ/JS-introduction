@@ -1,0 +1,166 @@
+1.工厂模式
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charest="utf-8">
+</head>
+<body>
+    <script>
+        function l ( arg ) {
+            console.log(arg);
+        };    
+    </script>
+
+    <script>
+        //工厂模式：因为使用一个接口创建很多对象会产生大量的重复代码，为了解决这个问题，人们就开始使用工厂模式：
+        function Person(hairs,face,eye){
+            this.hairs=hairs;
+            this.face=face;
+            this.eye=eye;
+        };
+        //我们通过Person(0,1,2)就可以创建一个包含特定信息的Person对象，以后要生成对象直接执行Person然后给他传参数就好了；
+        //比如我们要生成10个Person，很方便很快；
+        var c=10;
+        while(c--){
+            console.log(new Person(c,c,c))
+        };
+    </script>
+</body>
+</html>
+
+
+2.构造函数模式
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charest="utf-8">
+</head>
+<body>
+    <script>
+        function l ( arg ) {
+            console.log(arg);
+        };    
+    </script>
+
+    <script>
+        //工厂模式：因为使用一个接口创建很多对象会产生大量的重复代码，为了解决这个问题，人们就开始使用工厂模式：
+        function Person(hairs,face,eye){
+            this.hairs=hairs;
+            this.face=face;
+            this.eye=eye;
+        };
+        //我们通过Person(0,1,2)就可以创建一个包含特定信息的Person对象，以后要生成对象直接执行Person然后给他传参数就好了；
+        //比如我们要生成10个Person，很方便很快；
+        var c=10;
+        while(c--){
+            console.log(new Person(c,c,c))
+        };
+    </script>
+</body>
+</html>
+
+
+3.原型的本质
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <script>
+    function l(arg){
+        console.log(arg);   
+    };
+    </script>
+
+    <script>
+        function Memo(){};
+        Memo.prototype.hehe=1;
+        Memo.prototype.shut=function(){
+            console.log("miaomiao")
+        };
+        var m0=new Memo();
+        var m1=new Memo();
+        console.log(m0.shut===m1.shut);//true,因为m0的shut就是指向了Memo.prototype.shut这个办法，所以他们相等；
+        //Object.getPrototypeOf会返回实例的原型；
+        console.log(Object.getPrototypeOf(m0))//输出了：Memo{hehe:1,shut:function}
+        console.log(Memo.prototype.isPrototypeOf(m0))//输出:true;
+        //原型对象有一个很大的问题要非常注意==》》原型的属性和方法是被共享的，比如：
+        Memo.prototype.shut="w_w";
+        l(m0.shut)//输出：w_w,本来原型上的shut是个方法，被改成字符串以后，实例上的shut也发生改变实例
+        l(m1.shut)//输出：w_w；
+        m0._proto_.shut=1111;//m0的_proto_指向了Memo.prototype.shut,_proto_在标准浏览器下面是不能枚举到的，但确实是存在的一个属性；
+        l(m1.shut)//输出了1111
+        //只要原型上的属性或方法被改了，实例上的也会发生改变；
+    </script>
+</body>
+</html>
+
+
+4.prototype
+<html>
+<body>
+
+    <script type="text/javascript">
+        function employee(name,job,born){
+            this.name=name;
+            this.job=job;
+            this.born=born;
+        }
+        var bill=new employee("Bill Gates","Engineer",1984);
+        employee.prototype.salary=null;
+        bill.salary=20000;
+        document.write(bill.salary);
+    </script>
+</body>
+</html>
+
+
+5.constructor
+<!DOCTYPE html>
+<html>
+<head>
+   <title></title>
+   <meta charset="utf-8"> 
+</head>
+<body>
+    <script>
+        function l(arg){
+            console.log(arg);
+        };
+    </script>
+
+    <script>
+        var Fn=function(){
+            //我是构造函数Fn;
+        };
+        l("Fn的constructor");
+        l(Fn.prototype.constructor);
+        /*输出function(){
+            //我是构造函数Fn;
+        }*/
+        var f=new Fn;
+        l("f的constructor");
+        l(f.constructor);
+        /*输出;
+        *function(){
+            //我是构造函数Fn;
+        }*/
+        //当函数创建的时候默认就为prototype新建一个constructor指向自己；
+        l(Fn.constructor===Function);//输出true,Function这个构造函数是Funtion;
+        l(Fn.constructor)//输出function Function(){[native] code},意思是Function这个构造函数；
+        l(Fn.constructor===Fn._proto_.constructor)//输出true;Fnd的constructor实际上是指向Fn._proto_的;
+        //现在重新定义一个Fn;
+        var Fn=function(){
+            //我是构造函数Fn;
+        };
+        Fn.prototype={};
+        l(Fn.prototype.constructor)
+        /*打印出了内部的代码，为什么呢？因为我们改变了F你的原型，Fn的constructor指向了{}空对象的constructor；
+        *function Object(){[native code]}*/
+    </script>
+</body>
+</html>
